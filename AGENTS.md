@@ -13,6 +13,7 @@ E-commerce de la Mueblería Hermanos Jota (curso Full Stack ITBA, Sprints 3 y 4)
 - `backend/` → API REST con Node.js + Express. Sirve los productos desde un archivo local.
 - `client/` → SPA en React que consume la API con `fetch`.
 - `docs/api-contract.md` → contrato de la API. **Es la fuente de verdad**: el código se escribe a partir de él; si cambia la API, primero se actualiza el contrato.
+- `api/index.js` + `vercel.json` → deploy en Vercel (https://hermanos-jota-maximofox.vercel.app): el client compilado como estático y `/api/*` a la misma app de `backend/app.js`. No duplicar lógica del backend ahí.
 
 ## Stack
 
