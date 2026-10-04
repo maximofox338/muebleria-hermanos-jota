@@ -15,6 +15,7 @@ function ProductCard({ producto, onVerDetalle }) {
           alt={producto.nombre + ' de Hermanos Jota'}
           width="1024"
           height="1024"
+          loading="lazy"
         />
         <h3>{producto.nombre}</h3>
         <p className="precio">{formatearPrecio(producto.precio)}</p>

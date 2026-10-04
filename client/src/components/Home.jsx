@@ -1,33 +1,12 @@
-import { useEffect, useState } from 'react';
 import ProductCard from './ProductCard.jsx';
+import { useProductos } from '../hooks/useProductos.js';
 
 // Los mismos destacados que el sitio original, en este orden
 const idsDestacados = [7, 4, 1];
 
 // Inicio: hero, piezas destacadas y la sección "Nosotros".
 function Home({ onIrA, onVerDetalle }) {
-  const [productos, setProductos] = useState([]);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    async function cargarProductos() {
-      try {
-        const respuesta = await fetch('/api/productos');
-        if (!respuesta.ok) {
-          throw new Error('Error ' + respuesta.status);
-        }
-        const datos = await respuesta.json();
-        setProductos(datos);
-      } catch {
-        setError('No pudimos cargar las piezas. Probá de nuevo en un rato.');
-      } finally {
-        setCargando(false);
-      }
-    }
-
-    cargarProductos();
-  }, []);
+  const { productos, cargando, error } = useProductos();
 
   // Buscamos cada id destacado dentro de la lista (y salteamos los que no estén)
   const destacados = idsDestacados
@@ -44,7 +23,7 @@ function Home({ onIrA, onVerDetalle }) {
           materiales nobles.
         </p>
         <a
-          href="/"
+          href="?vista=catalogo"
           className="boton"
           onClick={(evento) => {
             evento.preventDefault();
@@ -59,7 +38,11 @@ function Home({ onIrA, onVerDetalle }) {
         <h2 id="titulo-destacados">Piezas destacadas</h2>
         <div className="galeria-productos">
           {cargando && <p className="aviso">Cargando piezas…</p>}
-          {error && <p className="aviso">{error}</p>}
+          {error && (
+            <p className="aviso">
+              No pudimos cargar las piezas. Probá de nuevo en un rato.
+            </p>
+          )}
           {destacados.map((producto) => (
             <ProductCard
               key={producto.id}

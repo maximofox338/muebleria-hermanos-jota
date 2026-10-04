@@ -7,7 +7,8 @@ const listarProductos = (req, res) => {
 
 // GET /api/productos/:id
 const obtenerProductoPorId = (req, res, next) => {
-  const producto = productos.find((p) => p.id === Number(req.params.id));
+  // Comparación exacta: "3" encuentra el producto 3, pero "03", "3.0" o "0x3" no
+  const producto = productos.find((p) => String(p.id) === req.params.id);
 
   if (!producto) {
     const error = new Error('Producto no encontrado');

@@ -23,7 +23,7 @@ Base URL en desarrollo: `http://localhost:4000`. Todas las respuestas son JSON.
 }
 ```
 
-- `id`: número entero, único.
+- `id`: número entero, único. En la URL se compara exacto: `/api/productos/3` encuentra el producto 3, pero `03`, `3.0` o `0x3` responden `404`.
 - `precio`: número en pesos argentinos, sin decimales. El client lo formatea.
 - `imagenURL`: ruta absoluta servida por el client (`client/public/img/`).
 
@@ -35,13 +35,14 @@ Siempre con la misma forma:
 { "message": "Producto no encontrado" }
 ```
 
-| Caso                                    | Status | `message`                            |
-| --------------------------------------- | ------ | ------------------------------------ |
-| `/api/productos/:id` con id inexistente | `404`  | `Producto no encontrado`             |
-| Ruta que no existe                      | `404`  | `Ruta no encontrada: <método> <url>` |
-| Error inesperado                        | `500`  | `Error interno del servidor`         |
+| Caso                                    | Status | `message`                                       |
+| --------------------------------------- | ------ | ----------------------------------------------- |
+| `/api/productos/:id` con id inexistente | `404`  | `Producto no encontrado`                        |
+| Body que no es un JSON válido           | `400`  | `El cuerpo de la petición no es un JSON válido` |
+| Ruta que no existe                      | `404`  | `Ruta no encontrada: <método> <url>`            |
+| Error inesperado                        | `500`  | `Error interno del servidor`                    |
 
-Fuera de producción, la respuesta de error incluye además `stack` para depurar.
+La respuesta nunca incluye detalles internos (`stack`, rutas de archivos): en los errores `500` el detalle se escribe solo en la consola del servidor.
 
 ## Decisiones
 
