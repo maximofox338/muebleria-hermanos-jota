@@ -5,6 +5,10 @@ Proyecto del curso Full Stack (ITBA), Sprints 3 y 4. El sitio de la Mueblería H
 - **`/backend`** → API REST con **Node.js + Express** que sirve el catálogo.
 - **`/client`** → SPA en **React** que consume la API con `fetch`.
 
+## Demo en vivo
+
+**https://hermanos-jota-maximofox.vercel.app** — el sitio completo (React) y la API (Express) publicados juntos en Vercel. Por ejemplo, la API: [`/api/productos`](https://hermanos-jota-maximofox.vercel.app/api/productos) y [`/api/productos/3`](https://hermanos-jota-maximofox.vercel.app/api/productos/3).
+
 ## Integrantes
 
 - Máximo Fox — proyecto individual. Los commits aparecen con dos cuentas de GitHub (`maximofox338` y `MaximoFox487`): ambas son del mismo autor.
@@ -26,6 +30,7 @@ Proyecto del curso Full Stack (ITBA), Sprints 3 y 4. El sitio de la Mueblería H
 │   ├── workflows/ci.yml            # CI: lint, build y tests en cada PR
 │   └── pull_request_template.md
 ├── .husky/                         # hooks de git: pre-commit y commit-msg
+├── api/index.js                    # función de Vercel: publica la app de Express
 ├── backend/
 │   ├── server.js                   # levanta el servidor (PORT o 4000)
 │   ├── app.js                      # arma la app: middlewares, rutas y errores
@@ -52,6 +57,7 @@ Proyecto del curso Full Stack (ITBA), Sprints 3 y 4. El sitio de la Mueblería H
 │   └── postman_collection.json
 ├── AGENTS.md                       # guía para agentes de IA (CLAUDE.md la importa)
 ├── eslint.config.js · .prettierrc · commitlint.config.cjs
+├── vercel.json                     # deploy: build del client + /api/* → Express
 └── package.json                    # workspaces + scripts de la raíz
 ```
 
@@ -118,6 +124,8 @@ Proxy de Vite  ──►  Express (:4000)
                      → 404 atrapa-todo → manejador de errores ({ message })
 ```
 
+**En producción (Vercel)** es el mismo esquema en un solo dominio: el client compilado (`client/dist`) se sirve como archivos estáticos y `vercel.json` manda todas las rutas `/api/*` a `api/index.js`, una función que publica **la misma app de Express** (`backend/app.js`). Por eso tampoco hace falta CORS en producción.
+
 **Backend.** `app.js` registra los middlewares en orden: el **logger global** (método, URL y fecha), `express.json()`, las rutas montadas con **`express.Router`** en `/api/productos`, y al final el **404 atrapa-todo** y el **manejador de errores centralizado** (4 argumentos). Los controllers no responden los errores a mano: crean un `Error` con `status` y llaman a `next(error)`.
 
 **Frontend.** No hay router: `App` guarda la `vista` actual en el estado y muestra cada pantalla con **renderizado condicional**. Cada vista tiene su URL (`/`, `?vista=catalogo`, `?vista=carrito`, `?vista=contacto`, `?id=3` para el detalle), así que se puede recargar, compartir y usar atrás/adelante en cualquier pantalla.
@@ -144,6 +152,7 @@ Proxy de Vite  ──►  Express (:4000)
 - **Hook propio `useProductos`**: el catálogo y los destacados del inicio necesitan el mismo pedido; en lugar de repetir el `fetch` en dos componentes, vive en un solo lugar.
 - **Buscador sin tildes ni mayúsculas**: "cordoba" encuentra "Sillas Córdoba".
 - **Errores de la API sin detalles internos**: el cliente solo recibe `{ message }`; los ids se comparan exactos (`0x3` o `3.0` dan `404`).
+- **Deploy en Vercel, front y back juntos**: un solo proyecto y un solo dominio. El backend no se reescribe para producción: `api/index.js` reutiliza `backend/app.js` (por eso `app.js` está separado de `server.js`, que solo se usa en desarrollo). Cada merge a `main` vuelve a publicar el sitio.
 
 ## Flujo de trabajo
 
@@ -152,7 +161,8 @@ Proxy de Vite  ──►  Express (:4000)
 - **Commits convencionales** (`feat`, `fix`, `docs`, `chore`, `test`, `ci`…), validados por **commitlint**.
 - **Husky + lint-staged**: antes de cada commit corren ESLint y Prettier sobre los archivos modificados.
 - **CI (GitHub Actions)**: en cada PR y push a `develop`/`main` corre `npm ci`, lint, build del client y tests.
-- **Releases**: `v0.3.0` (Sprint 3, backend), `v1.0.0` (Sprint 4, React) y `v1.0.1` (correcciones de la revisión final).
+- **Releases**: `v0.3.0` (Sprint 3, backend), `v1.0.0` (Sprint 4, React), `v1.0.1` (correcciones de la revisión final) y `v1.1.0` (deploy en Vercel).
+- **Deploy continuo**: Vercel está conectado al repo; cada merge a `main` publica una versión nueva en la demo.
 - **Desarrollo asistido por IA**: `AGENTS.md` define el rol, el stack, las reglas y las convenciones para los agentes; el código generado se revisó y probó en cada PR antes de mergear.
 
 ## Tests
