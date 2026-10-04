@@ -1,6 +1,7 @@
 import { formatearPrecio } from '../utils/formatearPrecio.js';
 
-// Carrito: tabla con las piezas elegidas, botón "Quitar" por fila, total y "Vaciar carrito".
+// Carrito: tabla con las piezas elegidas (una fila por pieza, con su cantidad),
+// botón "Quitar" por fila, total y "Vaciar carrito".
 // El estado vive en App; acá solo se muestra y se avisa con onQuitar / onVaciar.
 function Cart({ carrito, onQuitar, onVaciar, onIrA, onVerDetalle }) {
   function irAlCatalogo(evento) {
@@ -14,7 +15,10 @@ function Cart({ carrito, onQuitar, onVaciar, onIrA, onVerDetalle }) {
     }
   }
 
-  const total = carrito.reduce((suma, producto) => suma + producto.precio, 0);
+  const total = carrito.reduce(
+    (suma, item) => suma + item.precio * item.cantidad,
+    0
+  );
 
   return (
     <section aria-labelledby="titulo-carrito">
@@ -29,7 +33,7 @@ function Cart({ carrito, onQuitar, onVaciar, onIrA, onVerDetalle }) {
           <p className="aviso">
             Tu carrito está vacío. Todavía no elegiste ninguna pieza.
           </p>
-          <a href="/" className="boton" onClick={irAlCatalogo}>
+          <a href="?vista=catalogo" className="boton" onClick={irAlCatalogo}>
             Ver catálogo
           </a>
         </>
@@ -40,37 +44,42 @@ function Cart({ carrito, onQuitar, onVaciar, onIrA, onVerDetalle }) {
             <thead>
               <tr>
                 <th>Pieza</th>
-                <th>Precio</th>
+                <th>Cant.</th>
+                <th>Subtotal</th>
                 <th>Quitar</th>
               </tr>
             </thead>
             <tbody>
-              {/* La misma pieza puede estar dos veces: la key es la posición */}
-              {carrito.map((producto, posicion) => (
-                <tr key={posicion}>
+              {carrito.map((item) => (
+                <tr key={item.id}>
                   <td>
                     <img
-                      src={producto.imagenURL}
-                      alt={producto.nombre + ' de Hermanos Jota'}
+                      src={item.imagenURL}
+                      alt={item.nombre + ' de Hermanos Jota'}
                       width="1024"
                       height="1024"
+                      loading="lazy"
                     />
                     <a
-                      href={'?id=' + producto.id}
+                      href={'?id=' + item.id}
                       onClick={(evento) => {
                         evento.preventDefault();
-                        onVerDetalle(producto.id);
+                        onVerDetalle(item.id);
                       }}
                     >
-                      {producto.nombre}
+                      {item.nombre}
                     </a>
                   </td>
-                  <td className="precio">{formatearPrecio(producto.precio)}</td>
+                  <td>{item.cantidad}</td>
+                  <td className="precio">
+                    {formatearPrecio(item.precio * item.cantidad)}
+                  </td>
                   <td>
                     <button
                       type="button"
                       className="boton-quitar"
-                      onClick={() => onQuitar(posicion)}
+                      aria-label={'Quitar una unidad de ' + item.nombre}
+                      onClick={() => onQuitar(item.id)}
                     >
                       Quitar
                     </button>
@@ -80,7 +89,7 @@ function Cart({ carrito, onQuitar, onVaciar, onIrA, onVerDetalle }) {
             </tbody>
             <tfoot>
               <tr>
-                <th>Total</th>
+                <th colSpan="2">Total</th>
                 <td className="precio" colSpan="2">
                   {formatearPrecio(total)}
                 </td>
@@ -89,7 +98,7 @@ function Cart({ carrito, onQuitar, onVaciar, onIrA, onVerDetalle }) {
           </table>
 
           <div className="acciones-carrito">
-            <a href="/" className="boton" onClick={irAlCatalogo}>
+            <a href="?vista=catalogo" className="boton" onClick={irAlCatalogo}>
               Seguir eligiendo
             </a>
             <button
