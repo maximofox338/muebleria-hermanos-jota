@@ -40,7 +40,7 @@ function Navbar({ vista, cantidadCarrito, onIrA }) {
           </li>
           <li>
             <a
-              href="/"
+              href="?vista=catalogo"
               aria-current={actual(vista === 'catalogo' || vista === 'detalle')}
               onClick={(evento) => irA(evento, 'catalogo')}
             >
@@ -49,7 +49,7 @@ function Navbar({ vista, cantidadCarrito, onIrA }) {
           </li>
           <li>
             <a
-              href="/"
+              href="?vista=contacto"
               aria-current={actual(vista === 'contacto')}
               onClick={(evento) => irA(evento, 'contacto')}
             >
@@ -60,9 +60,8 @@ function Navbar({ vista, cantidadCarrito, onIrA }) {
       </nav>
 
       <a
-        href="/"
+        href="?vista=carrito"
         className="carrito"
-        aria-label="Ver el carrito"
         aria-current={actual(vista === 'carrito')}
         onClick={(evento) => irA(evento, 'carrito')}
       >

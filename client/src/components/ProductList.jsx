@@ -1,35 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ProductCard from './ProductCard.jsx';
+import { useProductos } from '../hooks/useProductos.js';
+
+// Pasa el texto a minúsculas, sin tildes y sin espacios en los extremos,
+// así "cordoba" encuentra "Córdoba" y "  MESA " encuentra "Mesa".
+function normalizar(texto) {
+  return texto
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '') // saca las tildes (á → a)
+    .toLowerCase()
+    .trim();
+}
 
 // Catálogo: pide los productos a la API y los filtra por nombre con el buscador.
 function ProductList({ onVerDetalle }) {
-  const [productos, setProductos] = useState([]);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState(null);
+  // fetch a /api/productos con sus estados de carga y error (ver hooks/useProductos.js)
+  const { productos, cargando, error } = useProductos();
   const [busqueda, setBusqueda] = useState('');
 
-  // [] = se ejecuta una sola vez, cuando el componente aparece
-  useEffect(() => {
-    async function cargarProductos() {
-      try {
-        const respuesta = await fetch('/api/productos');
-        if (!respuesta.ok) {
-          throw new Error('Error ' + respuesta.status);
-        }
-        const datos = await respuesta.json();
-        setProductos(datos);
-      } catch {
-        setError('No pudimos cargar el catálogo. Probá de nuevo en un rato.');
-      } finally {
-        setCargando(false);
-      }
-    }
-
-    cargarProductos();
-  }, []);
-
   const productosFiltrados = productos.filter((producto) =>
-    producto.nombre.toLowerCase().includes(busqueda.toLowerCase())
+    normalizar(producto.nombre).includes(normalizar(busqueda))
   );
 
   // Qué se muestra en la galería según el estado del pedido
@@ -37,7 +27,11 @@ function ProductList({ onVerDetalle }) {
   if (cargando) {
     contenido = <p className="aviso">Cargando catálogo…</p>;
   } else if (error) {
-    contenido = <p className="aviso">{error}</p>;
+    contenido = (
+      <p className="aviso">
+        No pudimos cargar el catálogo. Probá de nuevo en un rato.
+      </p>
+    );
   } else if (productosFiltrados.length === 0) {
     contenido = (
       <p className="aviso">

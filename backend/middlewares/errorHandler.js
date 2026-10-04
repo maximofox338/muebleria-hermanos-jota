@@ -8,17 +8,23 @@ const notFound = (req, res, next) => {
 };
 
 // Manejador centralizado. Express lo reconoce como de errores por tener 4 argumentos.
-// eslint-disable-next-line no-unused-vars
+// El cliente siempre recibe { message }; el detalle técnico (stack) queda solo en la consola.
 const errorHandler = (err, req, res, next) => {
+  // Si la respuesta ya empezó a enviarse, se delega al manejador por defecto de Express
+  if (res.headersSent) return next(err);
+
   const status = err.status || 500;
-  if (status === 500) console.error(err);
+  let message = err.message;
 
-  const respuesta = {
-    message: status === 500 ? 'Error interno del servidor' : err.message,
-  };
-  if (process.env.NODE_ENV !== 'production') respuesta.stack = err.stack;
+  if (status === 500) {
+    console.error(err);
+    message = 'Error interno del servidor';
+  } else if (err.type === 'entity.parse.failed') {
+    // Lo genera express.json() cuando el body no es un JSON válido
+    message = 'El cuerpo de la petición no es un JSON válido';
+  }
 
-  res.status(status).json(respuesta);
+  res.status(status).json({ message });
 };
 
 module.exports = { notFound, errorHandler };

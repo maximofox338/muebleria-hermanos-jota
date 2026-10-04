@@ -2,39 +2,50 @@ import { useEffect, useState } from 'react';
 import { formatearPrecio } from '../utils/formatearPrecio.js';
 
 // Detalle de un producto: lo pide a la API con el id que llega por props (sale de ?id= en la URL).
-// onAgregar es opcional: si no llega, no se muestra el botón del carrito.
 function ProductDetail({ id, onIrA, onAgregar }) {
   const [producto, setProducto] = useState(null);
   const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(false);
   const [noEncontrado, setNoEncontrado] = useState(false);
   const [agregado, setAgregado] = useState(false);
 
   useEffect(() => {
+    // Si el usuario se va antes de que llegue la respuesta, la ignoramos
+    let ignorar = false;
+
     async function cargarProducto() {
       try {
         const respuesta = await fetch(
           '/api/productos/' + encodeURIComponent(id)
         );
         if (respuesta.status === 404) {
-          setNoEncontrado(true);
+          if (!ignorar) setNoEncontrado(true);
           return;
         }
         if (!respuesta.ok) {
           throw new Error('Error ' + respuesta.status);
         }
         const datos = await respuesta.json();
-        setProducto(datos);
-        document.title = 'Hermanos Jota | ' + datos.nombre;
+        if (!ignorar) setProducto(datos);
       } catch {
-        setError('No pudimos cargar la pieza. Probá de nuevo en un rato.');
+        if (!ignorar) setError(true);
       } finally {
-        setCargando(false);
+        if (!ignorar) setCargando(false);
       }
     }
 
     cargarProducto();
+    return () => {
+      ignorar = true;
+    };
   }, [id]);
+
+  // Cuando llega la pieza, el título de la pestaña pasa a ser su nombre
+  useEffect(() => {
+    if (producto) {
+      document.title = 'Hermanos Jota | ' + producto.nombre;
+    }
+  }, [producto]);
 
   function agregarAlCarrito() {
     onAgregar(producto);
@@ -56,13 +67,17 @@ function ProductDetail({ id, onIrA, onAgregar }) {
         <p className="aviso">
           No encontramos esa pieza. Volvé al catálogo para elegir otra.
         </p>
-        <a href="/" className="boton" onClick={irAlCatalogo}>
+        <a href="?vista=catalogo" className="boton" onClick={irAlCatalogo}>
           Ver catálogo
         </a>
       </>
     );
   } else if (error) {
-    contenido = <p className="aviso">{error}</p>;
+    contenido = (
+      <p className="aviso">
+        No pudimos cargar la pieza. Probá de nuevo en un rato.
+      </p>
+    );
   } else {
     contenido = (
       <>
@@ -80,20 +95,13 @@ function ProductDetail({ id, onIrA, onAgregar }) {
           <p className="precio">{formatearPrecio(producto.precio)}</p>
           <p>{producto.descripcion}</p>
 
-          {onAgregar && (
-            <>
-              <button
-                type="button"
-                className="boton"
-                onClick={agregarAlCarrito}
-              >
-                Añadir al Carrito
-              </button>
-              <p className="exito">
-                {agregado && producto.nombre + ' ya está en tu carrito.'}
-              </p>
-            </>
-          )}
+          <button type="button" className="boton" onClick={agregarAlCarrito}>
+            Añadir al Carrito
+          </button>
+          {/* role="status": los lectores de pantalla anuncian el mensaje */}
+          <p className="exito" role="status">
+            {agregado && producto.nombre + ' ya está en tu carrito.'}
+          </p>
 
           <table className="ficha-tecnica">
             <caption>Ficha técnica</caption>

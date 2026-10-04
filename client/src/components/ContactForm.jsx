@@ -1,15 +1,9 @@
 import { useState } from 'react';
 
-// Un email válido tiene texto, luego "@", luego texto con un punto en el medio.
+// Un email válido: texto sin espacios ni "@", una sola "@", y un dominio con punto
+// (acepta ana@mail.com; rechaza "a b@c.com", "a@@b.com", "a@b" y "a@b.").
 function emailEsValido(email) {
-  const posicionArroba = email.indexOf('@');
-  const posicionPunto = email.lastIndexOf('.');
-
-  return (
-    posicionArroba > 0 &&
-    posicionPunto > posicionArroba + 1 &&
-    posicionPunto < email.length - 1
-  );
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 // Formulario de contacto con inputs controlados (value + onChange)
@@ -61,6 +55,8 @@ function ContactForm() {
       setMensaje('');
     } else {
       setExito('');
+      // Llevamos el foco al primer campo con error (los ids coinciden con las claves)
+      document.getElementById(Object.keys(nuevosErrores)[0]).focus();
     }
   }
 
@@ -88,6 +84,7 @@ function ContactForm() {
               value={nombre}
               onChange={(evento) => setNombre(evento.target.value)}
               aria-describedby="error-nombre"
+              aria-invalid={Boolean(errores.nombre)}
             />
             <p className="error" id="error-nombre">
               {errores.nombre}
@@ -103,6 +100,7 @@ function ContactForm() {
               value={email}
               onChange={(evento) => setEmail(evento.target.value)}
               aria-describedby="error-email"
+              aria-invalid={Boolean(errores.email)}
             />
             <p className="error" id="error-email">
               {errores.email}
@@ -118,6 +116,7 @@ function ContactForm() {
               value={mensaje}
               onChange={(evento) => setMensaje(evento.target.value)}
               aria-describedby="error-mensaje"
+              aria-invalid={Boolean(errores.mensaje)}
             />
             <p className="error" id="error-mensaje">
               {errores.mensaje}
@@ -128,7 +127,10 @@ function ContactForm() {
             Enviar mensaje
           </button>
 
-          <p className="exito">{exito}</p>
+          {/* role="status": los lectores de pantalla anuncian el mensaje */}
+          <p className="exito" role="status">
+            {exito}
+          </p>
         </form>
 
         <aside className="showroom" aria-labelledby="titulo-showroom">
