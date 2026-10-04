@@ -1,0 +1,25 @@
+{
+  "info": {
+    "name": "Mueblería Hermanos Jota API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [{ "key": "baseURL", "value": "http://localhost:4000" }],
+  "item": [
+    {
+      "name": "Listar productos",
+      "request": { "method": "GET", "url": "{{baseURL}}/api/productos" }
+    },
+    {
+      "name": "Producto por id",
+      "request": { "method": "GET", "url": "{{baseURL}}/api/productos/1" }
+    },
+    {
+      "name": "Producto inexistente (404)",
+      "request": { "method": "GET", "url": "{{baseURL}}/api/productos/999" }
+    },
+    {
+      "name": "Ruta inexistente (404)",
+      "request": { "method": "GET", "url": "{{baseURL}}/api/no-existe" }
+    }
+  ]
+}
