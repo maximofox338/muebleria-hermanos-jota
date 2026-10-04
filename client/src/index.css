@@ -1,0 +1,588 @@
+/* =========================================================
+   Hermanos Jota — hoja de estilos
+   Paleta oficial del manual de marca (sin agregados):
+     Siena Tostado    #A0522D  marca, títulos, botones
+     Verde Salvia     #87A96B  acento secundario, sustentabilidad
+     Alabastro Cálido #F5E6D3  fondos
+     Vara de Oro      #D4A437  detalles premium
+     Rosa Polvoriento #C47A6D  acentos suaves, errores
+   Texto de cuerpo: marrón oscuro neutro #3a3028 (permitido por el manual)
+   Enfoque Mobile First: base para celular, @media (min-width: 768px) para tablet/desktop
+   ========================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #3a3028;
+  background-color: #f5e6d3;
+}
+
+/* Tipografía editorial para títulos */
+h1,
+h2,
+h3 {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  color: #a0522d;
+  line-height: 1.2;
+}
+
+h1,
+h2 {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+}
+
+h2 {
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+}
+
+h3 {
+  font-size: 1.15rem;
+  margin-bottom: 10px;
+}
+
+a {
+  color: #a0522d;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---------- Cabecera ---------- */
+.cabecera {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  background-color: #f5e6d3;
+  border-bottom: 2px solid #d4a437;
+}
+
+/* El manual pide 120px de ancho mínimo y sin deformar */
+.logo img {
+  width: 120px;
+  height: auto;
+}
+
+.cabecera nav ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.cabecera nav a {
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding-bottom: 4px;
+}
+
+.cabecera nav a[aria-current='page'] {
+  border-bottom: 2px solid #d4a437;
+}
+
+.carrito {
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a0522d;
+  text-decoration: none;
+  padding-bottom: 4px;
+}
+
+.carrito[aria-current='page'] {
+  border-bottom: 2px solid #d4a437;
+}
+
+.carrito span {
+  background-color: #a0522d;
+  color: #f5e6d3;
+  border-radius: 12px;
+  padding: 2px 10px;
+  margin-left: 5px;
+}
+
+/* ---------- Contenido principal ---------- */
+/* React monta todo en #root: lo hacemos columna flex para que el footer
+   quede siempre abajo aunque la página tenga poco contenido (carrito vacío) */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  width: 100%; /* con margin auto, un item flex se achica al contenido */
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+main > section,
+main > article,
+main > aside {
+  margin-bottom: 40px;
+}
+
+/* ---------- Hero banner (Ejercicio 5 de CSS) ---------- */
+.hero-banner {
+  min-height: 70vh;
+  background-color: #a0522d;
+  color: #f5e6d3;
+  border-radius: 8px;
+  padding: 40px 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-banner h1 {
+  color: #f5e6d3;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
+.hero-banner p {
+  max-width: 40rem;
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+/* ---------- Botones y CTAs ---------- */
+.boton {
+  display: inline-block;
+  background-color: #a0522d;
+  color: #f5e6d3;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 24px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.hero-banner .boton {
+  background-color: #d4a437;
+  color: #3a3028;
+}
+
+/* ---------- Tarjetas de producto (Ejercicios 3 y 4 de CSS) ---------- */
+.galeria-productos {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tarjeta-producto {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #d4a437;
+  border-radius: 8px;
+  box-shadow: 4px 4px 12px rgba(160, 82, 45, 0.15);
+  text-align: center;
+}
+
+.tarjeta-producto a {
+  display: block;
+  text-decoration: none;
+  color: #3a3028;
+}
+
+/* Las fotos del kit son de 1024×1024: nunca se agrandan más que eso */
+.tarjeta-producto img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.tarjeta-producto h3 {
+  margin-bottom: 5px;
+}
+
+.precio {
+  color: #a0522d;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.aviso {
+  color: #a0522d;
+  font-weight: 500;
+  padding: 20px 0;
+}
+
+/* ---------- Buscador y campos de formulario ---------- */
+.buscador {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 20px 0 30px 0;
+}
+
+.buscador label,
+.campo label {
+  font-weight: 500;
+}
+
+.buscador input,
+.campo input,
+.campo textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #a0522d;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 1rem;
+  color: #3a3028;
+  background-color: #f5e6d3;
+}
+
+/* ---------- Detalle de producto ---------- */
+.detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.detalle-imagen img {
+  width: 100%;
+  height: auto;
+  border: 1px solid #d4a437;
+  border-radius: 8px;
+}
+
+.detalle-info h1 {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+}
+
+.detalle-info .precio {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+.detalle-info p {
+  margin-bottom: 15px;
+}
+
+.ficha-tecnica {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 25px;
+}
+
+.ficha-tecnica caption {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  color: #a0522d;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-align: left;
+  padding: 10px 0;
+}
+
+.ficha-tecnica th,
+.ficha-tecnica td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #d4a437;
+}
+
+.ficha-tecnica thead th {
+  background-color: #a0522d;
+  color: #f5e6d3;
+}
+
+.ficha-tecnica tbody th {
+  width: 40%;
+  font-weight: 500;
+  color: #a0522d;
+}
+
+/* ---------- Página del carrito ---------- */
+.tabla-carrito {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.tabla-carrito caption {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  color: #a0522d;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-align: left;
+  padding: 10px 0;
+}
+
+.tabla-carrito th,
+.tabla-carrito td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #d4a437;
+  vertical-align: middle;
+}
+
+.tabla-carrito thead th {
+  background-color: #a0522d;
+  color: #f5e6d3;
+}
+
+.tabla-carrito tbody img {
+  display: block;
+  width: 70px;
+  height: auto;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.tabla-carrito tfoot th {
+  color: #a0522d;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.tabla-carrito tfoot .precio {
+  font-size: 1.3rem;
+}
+
+.boton-quitar {
+  background-color: #c47a6d;
+  color: #f5e6d3;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.acciones-carrito {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+/* ---------- Aside (sustentabilidad, Herencia Viva, showroom) ---------- */
+aside {
+  padding: 20px;
+  border-left: 6px solid #87a96b;
+  border-radius: 0 8px 8px 0;
+  box-shadow: 4px 4px 12px rgba(160, 82, 45, 0.15);
+}
+
+aside ul {
+  padding-left: 20px;
+}
+
+aside address + h3,
+aside p + h3,
+aside ul + h3 {
+  margin-top: 15px;
+}
+
+#nosotros p {
+  margin-bottom: 20px;
+}
+
+/* ---------- Contacto ---------- */
+.contacto-contenido {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+/* Mensajes de error y éxito inyectados por JS */
+.error {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #3a3028;
+  border-left: 4px solid #c47a6d;
+  padding-left: 10px;
+}
+
+.exito {
+  font-weight: 500;
+  color: #3a3028;
+  border-left: 4px solid #87a96b;
+  padding-left: 10px;
+  margin-top: 15px;
+}
+
+address {
+  font-style: normal;
+}
+
+/* ---------- Pie de página ---------- */
+footer {
+  background-color: #a0522d;
+  color: #f5e6d3;
+  padding: 40px 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+footer h2 {
+  color: #d4a437;
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+footer a {
+  color: #f5e6d3;
+}
+
+footer ul {
+  list-style: none;
+}
+
+.copyright {
+  width: 100%;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  border-top: 1px solid #d4a437;
+  padding-top: 15px;
+}
+
+/* =========================================================
+   Tablet y escritorio
+   ========================================================= */
+@media (min-width: 768px) {
+  h1 {
+    font-size: 2.4rem;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+  }
+
+  .cabecera {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px 40px;
+  }
+
+  .hero-banner h1 {
+    font-size: 2.8rem;
+  }
+
+  .hero-banner p {
+    font-size: 1.25rem;
+  }
+
+  .galeria-productos {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .tarjeta-producto {
+    width: 31%;
+  }
+
+  .buscador {
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .buscador input {
+    width: 50%;
+  }
+
+  .detalle {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .detalle-imagen,
+  .detalle-info {
+    width: 50%;
+  }
+
+  .contacto-contenido {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .tabla-carrito tbody img {
+    width: 90px;
+  }
+
+  .acciones-carrito {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .formulario-contacto {
+    width: 58%;
+  }
+
+  .showroom {
+    width: 38%;
+  }
+
+  footer {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 40px;
+  }
+
+  .pie-columna {
+    width: 30%;
+  }
+}
